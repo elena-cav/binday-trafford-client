@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export default axios.create({
-  baseURL: 'http://localhost:9090/api',
+  baseURL: 'https://binday-server.herokuapp.com/api',
   headers: {
     'Content-type': 'application/json'
   }

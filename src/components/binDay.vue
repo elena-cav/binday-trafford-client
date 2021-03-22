@@ -1,6 +1,6 @@
 <template>
-  <div class="section-center clearfix">
-    <div class="area">
+  <div class="body">
+    <div class="section-center">
       <div class="topBlock">
         <div class="logo-wrapper">
           <i class="rotate fas fa-sync-alt"></i>
@@ -9,14 +9,22 @@
         <h3 class="subtitle">Trafford</h3>
         <select
           class="selectionBlock"
-          v-model="area"
+          v-model="area" 
           @change="onChange($event)"
         >
-          <option v-for="areaname in areas" :key="areaname">
+          <option class = 'optionsAreas' v-for="areaname in areas" :key="areaname" :selected="areaname===hello">
             {{ areaname }}
           </option>
         </select>
       </div>
+
+
+  <transition name="fade">
+    <h1 v-if="!area" class = 'welcome'>Welcome to binday Trafford, <br> please select your area</h1>
+  </transition>
+
+
+
 
       <div v-if="area">
         <div class="binday-text">
@@ -26,8 +34,6 @@
         <div class="binsBlock">
           <h3 class="binColours colouredText">{{ colour }}</h3>
           <h3 class="binColours greenText">green</h3>
-
-          <!-- <p>{{recyclableItems}}</p> -->
 
           <binIcon class="binIcons colouredBin" :colour="colour" />
           <binIcon class="binIcons greenBin" colour="green" />
@@ -46,20 +52,19 @@
     <transition name="fade" appear>
       <div
         class="modal-overlay"
-        v-if="showModal"
+        v-if="showModal" 
         @click="showModal = false"
       ></div>
     </transition>
     <transition name="slide" appear>
       <div class="modal" v-if="showModal">
-        <h1>What you can put in your {{colour}}bin</h1>
-        <p>{{recyclableItems}}</p>
+        <h1>What you can put in your {{ colour }} bin</h1>
+        <p>{{ recyclableItems }}</p>
         <button class="btn" @click="showModal = false">Close</button>
       </div>
     </transition>
 
-    
-        <transition name="fade" appear>
+    <transition name="fade" appear>
       <div
         class="modal-overlay"
         v-if="showGreenModal"
@@ -69,10 +74,24 @@
     <transition name="slide" appear>
       <div class="green-modal" v-if="showGreenModal">
         <h1>What you can put in your green bin</h1>
-        <p>{{greenRecyclableItems}}</p>
+        <p>{{ greenRecyclableItems }}</p>
         <button class="btn" @click="showGreenModal = false">Close</button>
       </div>
     </transition>
+    <footer class="footer">
+      <div class="footer-icons">
+        <a
+          href="https://www.trafford.gov.uk/residents/environment/recycling-rubbish-and-waste/bins-and-recycling.aspx"
+          class="footer-icon"
+        >
+          <i class="far fa-mouse"></i>
+        </a>
+        <a href="mailto:elenacavallero@outlook.com" class="footer-icon">
+          <i class="fab fa-envelope"></i>
+        </a>
+      </div>
+      <p class="footer-text">COPYRIGHT {{ currentYear }} © Elena Cavallero</p>
+    </footer>
   </div>
 </template>
 
@@ -89,12 +108,10 @@ export default {
       area: null,
       recyclableItems: null,
       areas: ["Lacy Street", "Skelton Road", "Warwick Road"],
+      greenRecyclableItems: null,
       showGreenModal: false,
-      showModal: false
-      // bins: [
-      //   {binColour: 'grey',
-      //   binImage: }
-      // ]
+      showModal: false,
+      currentYear: new Date().getFullYear(),
     };
   },
   components: {
@@ -115,23 +132,20 @@ export default {
         this.area = area;
         this.recyclableItems = recyclableItems;
       });
-
     },
 
-      getAllBinsInfo(area) {
-        BinDayDataService.getBinsByArea(area).then(({data}) => {
-          const {recyclableItems} = data 
-          this.greenRecyclableItems = recyclableItems
-        })
-      },
-
+    getGreenBinInfo() {
+      BinDayDataService.getGreenBinContent().then(({data}) => {
+        // console.log('here', res)
+        const { recyclableItems } = data;
+        this.greenRecyclableItems = recyclableItems;
+      });
+    },
 
     onChange(event) {
       this.getBinInfo(event.target.value);
+      this.getGreenBinInfo();
     },
-
-
-
   },
 };
 </script>
@@ -168,8 +182,14 @@ export default {
 .section-center {
   max-width: 1170px;
   position: relative;
+  flex-grow: 1;
 }
 
+@media screen and (min-width: 800px) {
+  .section-center {
+  max-width: 2000px;
+  }
+}
 h1,
 h2,
 h3,
@@ -205,6 +225,7 @@ body {
   color: black;
   line-height: 1.5;
   font-size: 0.875rem;
+  position: relative;
 }
 
 @media (min-width: 480px) {
@@ -222,12 +243,8 @@ body {
 .topBlock {
   padding: 2rem 1rem;
   background-color: var(--clr-red);
-  width: 100%;
-  height: auto;
-  display: block;
 }
 .logo-wrapper {
-  display: flex;
   color: var(--clr-yellow);
   align-items: flex-start;
   position: relative;
@@ -252,20 +269,38 @@ body {
   color: var(--clr-yellow);
 }
 .selectionBlock {
-  height: 50px;
   margin: 1.5rem auto 0rem auto;
   display: flex;
-  text-align: center;
-  justify-content: center;
-  justify-self: center;
   font-size: 0.8rem;
-}
+  color: var(--clr-primary);
+  border-radius: var(--radius);
+  background-color: var(--clr-white);
+  padding: 1rem 0.4rem
+  }
+
+
 
 @media (min-width: 480px) {
   .selectionBlock {
     font-size: 1rem;
   }
 }
+
+.welcome {
+  padding: 2rem;
+  text-align: center;
+  animation: show 2s linear 1;
+  line-height: 2.5rem
+
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+
 
 .binday-text {
   display: flex;
@@ -301,11 +336,9 @@ body {
 
 .binColours {
   text-transform: uppercase;
-  animation: show 1.5s linear 1;
 }
 .binIcons {
   justify-content: center;
-  animation: show 1.5s linear 1;
 }
 .colouredText {
   grid-area: a;
@@ -358,7 +391,8 @@ body {
   background-color: rgba(0, 0, 0, 0.6);
 }
 
-.modal, .green-modal {
+.modal,
+.green-modal {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -367,8 +401,8 @@ body {
   width: 100%;
   max-width: 400px;
   background-color: var(--clr-white);
-  border-radius: 16px;
-  padding: 25px;
+  border-radius: var(--radius);
+  padding: 20px;
 }
 .fade-enter-active,
 .fade-leave-active {
@@ -388,49 +422,47 @@ body {
   transform: translateY(-50%) translateX(100vw);
 }
 
-svg {
-  width: 40%;
+
+
+.footer {
+  padding: 1rem;
+  bottom: 0;
+  width: 100%;
+  background: var(--clr-grey-1);
+  text-align: center;
+}
+.footer-icon {
+  color: var(--clr-background);
+  font-size: 1.5rem;
+  margin-right: 1rem;
+  transition: var(--transition);
 }
 
-svg:hover {
-  animation: shake 0.5s infinite;
+.footer-icon:hover {
+  color: var(--clr-yellow);
+}
+
+.footer-text {
+  margin-top: 0.5rem;
+  color: var(--clr-white);
+  font-weight: 400;
 }
 
 /* animations */
 
-@keyframes shake {
-  0% {
-    transform: translate(1px, 1px) rotate(0deg);
-  }
-  10% {
-    transform: translate(-2px, -2px) rotate(-2deg);
-  }
-  20% {
-    transform: translate(-4px, 0px) rotate(-5deg);
-  }
-  30% {
-    transform: translate(3px, 2px) rotate(0deg);
-  }
-  40% {
-    transform: translate(1px, -1px) rotate(5deg);
-  }
 
-  /* 60% {
-                transform: translate(-3px, 1px) rotate(0deg);
-            } */
-  70% {
-    transform: translate(3px, 1px) rotate(-1deg);
-  }
-  /* 80% {
-                transform: translate(-1px, -1px) rotate(2deg);
-            } */
-  90% {
-    transform: translate(1px, 2px) rotate(4deg);
-  }
-  100% {
-    transform: translate(1px, -2px) rotate(0deg);
-  }
+.slide-fade-enter-active {
+  transition: all .3s ease;
 }
+.slide-fade-leave-active {
+  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+
+
+
+
+
+
 
 @keyframes rotation {
   to {
@@ -492,4 +524,9 @@ svg:hover {
     opacity: 1;
   }
 }
+
+
+
+
+
 </style>
