@@ -9,22 +9,26 @@
         <h3 class="subtitle">Trafford</h3>
         <select
           class="selectionBlock"
-          v-model="area" 
+          v-model="area"
           @change="onChange($event)"
         >
-          <option class = 'optionsAreas' v-for="areaname in areas" :key="areaname" :selected="areaname===hello">
+          <option
+            class="optionsAreas"
+            v-for="areaname in areas"
+            :key="areaname"
+            :selected="areaname === hello"
+          >
             {{ areaname }}
           </option>
         </select>
       </div>
 
-
-  <transition name="fade">
-    <h1 v-if="!area" class = 'welcome'>Welcome to binday Trafford, <br> please select your area</h1>
-  </transition>
-
-
-
+      <transition name="fade">
+        <h1 v-if="!area" :class="[{ hiding: area }, 'welcome']">
+          Welcome to binday Trafford, <br />
+          please select your area
+        </h1>
+      </transition>
 
       <div v-if="area">
         <div class="binday-text">
@@ -52,7 +56,7 @@
     <transition name="fade" appear>
       <div
         class="modal-overlay"
-        v-if="showModal" 
+        v-if="showModal"
         @click="showModal = false"
       ></div>
     </transition>
@@ -84,10 +88,9 @@
           href="https://www.trafford.gov.uk/residents/environment/recycling-rubbish-and-waste/bins-and-recycling.aspx"
           class="footer-icon"
         >
-          <i class="far fa-mouse"></i>
-        </a>
+<i class="fas fa-info-circle"></i>    </a>
         <a href="mailto:elenacavallero@outlook.com" class="footer-icon">
-          <i class="fab fa-envelope"></i>
+          <i class="far fa-envelope"></i>
         </a>
       </div>
       <p class="footer-text">COPYRIGHT {{ currentYear }} © Elena Cavallero</p>
@@ -96,26 +99,26 @@
 </template>
 
 <script>
-import BinDayDataService from "../../services/binDayDataService";
-import binIcon from "./binIcon";
+import BinDayDataService from '../../services/binDayDataService';
+import binIcon from './binIcon';
 
 export default {
-  name: "binday",
+  name: 'binday',
   data() {
     return {
       date: null,
       colour: null,
       area: null,
       recyclableItems: null,
-      areas: ["Lacy Street", "Skelton Road", "Warwick Road"],
+      areas: ['Lacy Street', 'Skelton Road', 'Warwick Road'],
       greenRecyclableItems: null,
       showGreenModal: false,
       showModal: false,
-      currentYear: new Date().getFullYear(),
+      currentYear: new Date().getFullYear()
     };
   },
   components: {
-    binIcon,
+    binIcon
   },
   // props: {
   //   name: {
@@ -135,7 +138,7 @@ export default {
     },
 
     getGreenBinInfo() {
-      BinDayDataService.getGreenBinContent().then(({data}) => {
+      BinDayDataService.getGreenBinContent().then(({ data }) => {
         // console.log('here', res)
         const { recyclableItems } = data;
         this.greenRecyclableItems = recyclableItems;
@@ -145,13 +148,13 @@ export default {
     onChange(event) {
       this.getBinInfo(event.target.value);
       this.getGreenBinInfo();
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style>
-@import url("https://fonts.googleapis.com/css2?family=Baloo+Tammudu+2:wght@400;600&display=swap&family=Montserrat:ital,wght@0,400;0,600;1,400;1,600&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Baloo+Tammudu+2:wght@400;600&display=swap&family=Montserrat:ital,wght@0,400;0,600;1,400;1,600&display=swap');
 
 *,
 *::before,
@@ -171,8 +174,8 @@ export default {
   --clr-red: #ed6a5a;
   --clr-yellow: #f4f1bb;
   --clr-white: #fff;
-  --ff-primary: "Montserrat", sans-serif;
-  --ff-secondary: "Baloo Tammudu 2", cursive;
+  --ff-primary: 'Montserrat', sans-serif;
+  --ff-secondary: 'Baloo Tammudu 2', cursive;
   --transition: all 0.3s linear;
   --spacing: 0.15rem;
   --spacing-secondary: 0.05rem;
@@ -187,7 +190,7 @@ export default {
 
 @media screen and (min-width: 800px) {
   .section-center {
-  max-width: 2000px;
+    max-width: 2000px;
   }
 }
 h1,
@@ -275,10 +278,8 @@ body {
   color: var(--clr-primary);
   border-radius: var(--radius);
   background-color: var(--clr-white);
-  padding: 1rem 0.4rem
-  }
-
-
+  padding: 1rem 0.4rem;
+}
 
 @media (min-width: 480px) {
   .selectionBlock {
@@ -289,18 +290,41 @@ body {
 .welcome {
   padding: 2rem;
   text-align: center;
-  animation: show 2s linear 1;
-  line-height: 2.5rem
-
+  line-height: 2.5rem;
 }
+
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+.slide-enter-active,
+.slide-leave-active {
+  transition: transform 0.5s;
+}
+
+.slide-enter,
+.slide-leave-to {
+  transform: translateY(-50%) translateX(100vw);
+}
+
+
+
+
+/* .hiding {
+position: absolute
+} */
 
 .body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  overflow-x: hidden;
 }
-
-
 
 .binday-text {
   display: flex;
@@ -330,7 +354,7 @@ body {
   justify-items: center;
   align-items: center;
   grid-template: repeat(3, 1fr) / repeat(2, 1fr);
-  grid-template-areas: "a b" "c d" "e f";
+  grid-template-areas: 'a b' 'c d' 'e f';
   column-gap: 1rem;
 }
 
@@ -396,6 +420,8 @@ body {
   position: fixed;
   top: 50%;
   left: 50%;
+  transform: translateX(-50%);
+
   transform: translate(-50% -50%);
   z-index: 100;
   width: 100%;
@@ -404,24 +430,6 @@ body {
   border-radius: var(--radius);
   padding: 20px;
 }
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s;
-}
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
-}
-.slide-enter-active,
-.slide-leave-active {
-  transition: transform 0.5s;
-}
-
-.slide-enter,
-.slide-leave-to {
-  transform: translateY(-50%) translateX(100vw);
-}
-
 
 
 .footer {
@@ -450,19 +458,12 @@ body {
 
 /* animations */
 
-
 .slide-fade-enter-active {
-  transition: all .3s ease;
+  transition: all 0.3s ease;
 }
 .slide-fade-leave-active {
-  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
 }
-
-
-
-
-
-
 
 @keyframes rotation {
   to {
@@ -524,9 +525,4 @@ body {
     opacity: 1;
   }
 }
-
-
-
-
-
 </style>
