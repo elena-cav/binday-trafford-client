@@ -16,7 +16,6 @@
             class="optionsAreas"
             v-for="areaname in areas"
             :key="areaname"
-            :selected="areaname === hello"
           >
             {{ areaname }}
           </option>
@@ -140,8 +139,7 @@ export default {
 
     getGreenBinInfo() {
       BinDayDataService.getGreenBinContent().then(({ data }) => {
-        // console.log('here', res)
-        const { recyclableItems } = data;
+        const  {recyclableItems}  = data.recyclableItems;
         this.greenRecyclableItems = recyclableItems;
       });
     },
