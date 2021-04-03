@@ -13,7 +13,7 @@ Back-End: Express
 Front-End: Vue.js, CSS, HTML
 Testing: Jest, Supertest
 DB: PostrgreSQL, Knex.js
-The website is currently hosted at https://determined-joliot-4dff91.netlify.app/
+The website is currently hosted at https://binday-trafford.netlify.app/
 
 Project setup
 
